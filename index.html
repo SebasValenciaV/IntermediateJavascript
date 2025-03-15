@@ -1,11 +1,174 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
     <title>Sistema de Recomendación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .producto {
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .producto h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .botones {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .botones button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .botones button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <h1>Sistema de Recomendación</h1>
-    <div id="resultados"></div>
-    <script src="recomendaciones.js"></script>
+    <div class="container">
+        <h1>🛍️ Sistema de Recomendación de Productos</h1>
+        
+        <div class="botones">
+            <button onclick="mostrarRecomendacionCategoria()">
+                Recomendar por Categoría
+            </button>
+            <button onclick="mostrarRecomendacionPrecio()">
+                Recomendar por Precio
+            </button>
+            <button onclick="buscarProducto()">
+                Buscar Producto
+            </button>
+        </div>
+
+        <div id="resultados"></div>
+    </div>
+
+    <script>
+        // Datos de productos
+        const productos = [
+            {
+                id: 1,
+                nombre: "Laptop Gamer",
+                categoria: "Tecnología",
+                precio: 1200,
+                descripcion: "Laptop potente para videojuegos"
+            },
+            {
+                id: 2,
+                nombre: "Smartphone Pro",
+                categoria: "Tecnología",
+                precio: 800,
+                descripcion: "Smartphone de alta gama para profesionales"
+            },
+            {
+                id: 3,
+                nombre: "Tablet Educativa",
+                categoria: "Educación",
+                precio: 300,
+                descripcion: "Tablet diseñada para estudiantes"
+            },
+            {
+                id: 4,
+                nombre: "Laptop Oficina",
+                categoria: "Tecnología",
+                precio: 600,
+                descripcion: "Laptop ideal para trabajo de oficina"
+            },
+            {
+                id: 5,
+                nombre: "Smartphone Básico",
+                categoria: "Tecnología",
+                precio: 200,
+                descripcion: "Smartphone económico para uso básico"
+            }
+        ];
+
+        // Clase de Sistema de Recomendación
+        class SistemaRecomendacion {
+            constructor(productos) {
+                this.productos = productos;
+            }
+
+            recomendarPorCategoria(categoriaProducto) {
+                return this.productos.filter(
+                    producto => producto.categoria === categoriaProducto
+                );
+            }
+
+            recomendarPorPrecio(precioMinimo, precioMaximo) {
+                return this.productos.filter(
+                    producto => producto.precio >= precioMinimo && 
+                                producto.precio <= precioMaximo
+                );
+            }
+
+            buscarPorNombre(nombreProducto) {
+                return this.productos.filter(
+                    producto => producto.nombre.toLowerCase().includes(nombreProducto.toLowerCase())
+                );
+            }
+        }
+
+        // Crear instancia del sistema de recomendación
+        const miSistemaRecomendacion = new SistemaRecomendacion(productos);
+
+        // Función para mostrar productos
+        function mostrarProductos(productosAMostrar, titulo) {
+            const resultadosDiv = document.getElementById('resultados');
+            resultadosDiv.innerHTML = `<h2>${titulo}</h2>`;
+
+            productosAMostrar.forEach(producto => {
+                const productoDiv = document.createElement('div');
+                productoDiv.classList.add('producto');
+                productoDiv.innerHTML = `
+                    <h3>${producto.nombre}</h3>
+                    <p><strong>Categoría:</strong> ${producto.categoria}</p>
+                    <p><strong>Precio:</strong> $${producto.precio}</p>
+                    <p><strong>Descripción:</strong> ${producto.descripcion}</p>
+                `;
+                resultadosDiv.appendChild(productoDiv);
+            });
+        }
+
+        // Funciones para botones
+        function mostrarRecomendacionCategoria() {
+            const productos = miSistemaRecomendacion.recomendarPorCategoria("Tecnología");
+            mostrarProductos(productos, "🖥️ Productos de Tecnología");
+        }
+
+        function mostrarRecomendacionPrecio() {
+            const productos = miSistemaRecomendacion.recomendarPorPrecio(500, 1000);
+            mostrarProductos(productos, "💰 Productos entre $500 y $1000");
+        }
+
+        function buscarProducto() {
+            const nombreBusqueda = prompt("Ingrese el nombre del producto a buscar:");
+            if (nombreBusqueda) {
+                const productos = miSistemaRecomendacion.buscarPorNombre(nombreBusqueda);
+                mostrarProductos(productos, `🔍 Resultados para: ${nombreBusqueda}`);
+            }
+        }
+    </script>
 </body>
 </html>
